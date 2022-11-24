@@ -32,6 +32,7 @@ void welcomeMsg()
     std::cin.ignore(1000, '\n');
     if (isYes(choice))
     {
+        cout << "\n- WVSU-SIS stands for West Visayas State University Student Information System (not official)...";
         cout << "\n- This program was spearheaded by Keane Dalisay along with Nel Alanan...";
         pressEnterToContinue();
         cout << "\n- Both took Bachelor of Science in Computer Science as their desired college course...";
@@ -46,6 +47,8 @@ void welcomeMsg()
         pressEnterToContinue();
     }
 }
+
+// helper functions below this comment
 
 bool isYes(char choice)
 {
