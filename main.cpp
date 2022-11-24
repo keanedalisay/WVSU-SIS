@@ -6,16 +6,22 @@
 
 #include <iostream>
 #include <fstream>
-#include <limits>
 #include "json.hpp"
 
 void welcomeMsg();
+void loginOrSignup();
+void doSignup();
+void doLogin();
+void doExitProgram();
+
+void createThematicBreak();
 void pressEnterToContinue();
 bool isYes(char);
 
 int main()
 {
     welcomeMsg();
+    loginOrSignup();
     return 0;
 }
 
@@ -24,6 +30,7 @@ void welcomeMsg()
     using std::cout;
     char choice;
 
+    createThematicBreak();
     cout << "\nWelcome to WVSU-SIS.";
     pressEnterToContinue();
     cout << "\nWould you like to know the history of this program? (y/n): ";
@@ -48,6 +55,48 @@ void welcomeMsg()
     }
 }
 
+void loginOrSignup()
+{
+    using std::cout;
+    int choice;
+
+    cout << "\nWhich option would you like to choose?";
+    cout << "\n\n> Log-in (1)";
+    cout << "\n> Sign-up (2)";
+    cout << "\n> Exit (3)";
+
+    cout << "\n\n: ";
+    std::cin >> choice;
+    switch (choice)
+    {
+    case 1:
+        doLogin();
+        break;
+    case 2:
+        doSignup();
+        break;
+    case 3:
+        doExitProgram();
+        break;
+    default:
+        doExitProgram();
+    }
+}
+
+void doSignup()
+{
+}
+
+void doLogin()
+{
+}
+
+void doExitProgram()
+{
+    createThematicBreak();
+    std::cout << "\nSuccessfully exited program.\n\n";
+}
+
 // helper functions below this comment
 
 bool isYes(char choice)
@@ -64,4 +113,18 @@ void pressEnterToContinue()
     std::cin.clear();
     std::cout << "\nPress enter to continue... ";
     std::cin.ignore(1000, '\n');
+}
+
+void createThematicBreak()
+{
+    using std::cout;
+    cout << "\n";
+    char dash = '-';
+    int dashCount = 0;
+    while (dashCount <= 50)
+    {
+        cout << dash;
+        dashCount += 1;
+    }
+    cout << "\n";
 }
