@@ -32,7 +32,7 @@ bool isYes(char choice);
 
 void pressEnterToContinue();
 
-void newThematicBreak();
+void newThematicBreak(char);
 
 int main()
 {
@@ -72,7 +72,7 @@ void welcomeMessage()
     using std::cout;
     char choice;
 
-    newThematicBreak();
+    newThematicBreak('-');
     cout << "\nWelcome to WVSU-SIS.";
     pressEnterToContinue();
     cout << "\nWould you like to know the history of this program? (y/n): ";
@@ -131,6 +131,8 @@ void loginOrSignup()
 
 void doSignup()
 {
+    newThematicBreak('*');
+
     using std::cin;
     using std::cout;
     using std::string;
@@ -212,6 +214,7 @@ void doSignup()
     jsonOutFile << data.dump(2, ' ');
     jsonOutFile.close();
 
+    newThematicBreak('*');
     return;
 }
 
@@ -221,7 +224,7 @@ void doLogin()
 
 void exitProgram()
 {
-    newThematicBreak();
+    newThematicBreak('-');
     std::cout << "\nSuccessfully exited program.\n\n";
     return;
 }
@@ -421,11 +424,11 @@ void pressEnterToContinue()
     return;
 }
 
-void newThematicBreak()
+void newThematicBreak(char symbol)
 {
     using std::cout;
     cout << "\n";
-    char dash = '-';
+    char dash = symbol;
     int dashCount = 0;
     while (dashCount <= 50)
     {
