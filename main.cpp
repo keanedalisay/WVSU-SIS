@@ -8,12 +8,12 @@
 #include <fstream>
 #include "json.hpp"
 
-void welcomeMsg();
+void welcomeMessage();
 void loginOrSignup();
 
 void doSignup();
 void doLogin();
-void doExitProgram();
+void exitProgram();
 
 void getFileName(std::string &fileName);
 void getWhatName(std::string whatName, std::string &name);
@@ -32,11 +32,11 @@ bool isYes(char choice);
 
 void pressEnterToContinue();
 
-void createThematicBreak();
+void newThematicBreak();
 
 int main()
 {
-    welcomeMsg();
+    welcomeMessage();
     loginOrSignup();
     return 0;
 }
@@ -67,12 +67,12 @@ namespace SIS
     };
 }
 
-void welcomeMsg()
+void welcomeMessage()
 {
     using std::cout;
     char choice;
 
-    createThematicBreak();
+    newThematicBreak();
     cout << "\nWelcome to WVSU-SIS.";
     pressEnterToContinue();
     cout << "\nWould you like to know the history of this program? (y/n): ";
@@ -95,6 +95,8 @@ void welcomeMsg()
         cout << "\n- End of story, hope you liked it.";
         pressEnterToContinue();
     }
+
+    return;
 }
 
 void loginOrSignup()
@@ -118,11 +120,13 @@ void loginOrSignup()
         doSignup();
         break;
     case 3:
-        doExitProgram();
+        exitProgram();
         break;
     default:
-        doExitProgram();
+        exitProgram();
     }
+
+    return;
 }
 
 void doSignup()
@@ -208,17 +212,18 @@ void doSignup()
     jsonOutFile << data.dump(2, ' ');
     jsonOutFile.close();
 
-    doExitProgram();
+    return;
 }
 
 void doLogin()
 {
 }
 
-void doExitProgram()
+void exitProgram()
 {
-    createThematicBreak();
+    newThematicBreak();
     std::cout << "\nSuccessfully exited program.\n\n";
+    return;
 }
 
 // helper functions below this comment
@@ -229,12 +234,14 @@ void getFileName(std::string &fileName)
     std::cout << "\n(must end with .json): ";
     std::cin >> fileName;
     std::cin.ignore(1000, '\n');
+    return;
 }
 
 void getWhatName(std::string whatName, std::string &name)
 {
     std::cout << "\nEnter your " + whatName + " name: ";
     std::getline(std::cin, name);
+    return;
 }
 
 void getOccup(std::string &occup)
@@ -250,7 +257,9 @@ void getOccup(std::string &occup)
     else if (tolower(occupChoice) == 't')
         occup = "teachers";
     else
-        doExitProgram();
+        exitProgram();
+
+    return;
 }
 
 void getYearLevel(std::string &yrLvl, std::string &course)
@@ -297,6 +306,8 @@ void getYearLevel(std::string &yrLvl, std::string &course)
         break;
     }
     }
+
+    return;
 }
 
 void getCourse(std::string &course)
@@ -304,6 +315,7 @@ void getCourse(std::string &course)
     std::cout << "\nWhat senior high or college course are you currently taking?";
     std::cout << "\n(STEM/Bachelor of...): ";
     std::getline(std::cin, course);
+    return;
 }
 
 void getSubjects(std::string subjects[])
@@ -344,6 +356,8 @@ void getSubjects(std::string subjects[])
         cin.ignore(1000, '\n');
         arrIndx += 1;
     }
+
+    return;
 }
 
 void getUniID(std::string &uniID)
@@ -351,6 +365,7 @@ void getUniID(std::string &uniID)
     std::cout << "\nType in your university identification number: ";
     std::cin >> uniID;
     std::cin.ignore(1000, '\n');
+    return;
 }
 
 void getPassword(std::string &password)
@@ -403,9 +418,10 @@ void pressEnterToContinue()
     std::cin.clear();
     std::cout << "\nPress enter to continue... ";
     std::cin.ignore(1000, '\n');
+    return;
 }
 
-void createThematicBreak()
+void newThematicBreak()
 {
     using std::cout;
     cout << "\n";
@@ -417,4 +433,5 @@ void createThematicBreak()
         dashCount += 1;
     }
     cout << "\n";
+    return;
 }
