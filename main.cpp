@@ -1,4 +1,4 @@
-// Program Title: WVSU-SIS (Student Information System)
+// Program Title: West Visayas State University Student Information System
 // Submitted by: Keane Dalisay
 
 // Program Description: WVSU-SIS is a C++ based program designed
@@ -8,7 +8,7 @@
 #include <fstream>
 #include "json.hpp"
 
-void welcomeMessage();
+void welcomeDashboard();
 void loginOrSignup();
 
 void doSignup();
@@ -25,19 +25,18 @@ void getOccup(std::string &occup);
 void getYearLevel(std::string &yrLvl, std::string &course);
 void getCourse(std::string &course);
 
-void getSubjects(std::string var[]);
+void getSubjects(std::string subjects[]);
 
 bool isNotEmptyFile(std::ifstream &file);
 bool isYes(char choice);
 
 void pressEnterToContinue();
 
-void newThematicBreak(char);
+void newThematicBreak(char symbol);
 
 int main()
 {
-    welcomeMessage();
-    loginOrSignup();
+    welcomeDashboard();
     return 0;
 }
 
@@ -67,7 +66,7 @@ namespace SIS
     };
 }
 
-void welcomeMessage()
+void welcomeDashboard()
 {
     using std::cout;
     char choice;
@@ -96,6 +95,7 @@ void welcomeMessage()
         pressEnterToContinue();
     }
 
+    loginOrSignup();
     return;
 }
 
@@ -181,20 +181,20 @@ void doSignup()
     if (occup == "students")
     {
         getYearLevel(yrLvl, course);
-        SIS::stdntTemp user = {fName, mName, lName, uniID, yrLvl, course, password};
+        SIS::stdntTemp stdnt = {fName, mName, lName, uniID, yrLvl, course, password};
         data[occup][arrIndx] = {
-            {"fName", user.fName},
-            {"mName", user.mName},
-            {"lName", user.lName},
-            {"uniID", user.uniID},
-            {"yrLvl", user.yrLvl},
-            {"course", user.course},
-            {"password", user.password}};
+            {"fName", stdnt.fName},
+            {"mName", stdnt.mName},
+            {"lName", stdnt.lName},
+            {"uniID", stdnt.uniID},
+            {"yrLvl", stdnt.yrLvl},
+            {"course", stdnt.course},
+            {"password", stdnt.password}};
     }
     else if (occup == "teachers")
     {
         getSubjects(subjects);
-        SIS::teachrTemp user = {
+        SIS::teachrTemp teachr = {
             fName,
             mName,
             lName,
@@ -203,12 +203,12 @@ void doSignup()
             password};
 
         data[occup][arrIndx] = {
-            {"fName", user.fName},
-            {"mName", user.mName},
-            {"lName", user.lName},
-            {"uniID", user.uniID},
-            {"subjects", user.subjects},
-            {"password", user.password}};
+            {"fName", teachr.fName},
+            {"mName", teachr.mName},
+            {"lName", teachr.lName},
+            {"uniID", teachr.uniID},
+            {"subjects", teachr.subjects},
+            {"password", teachr.password}};
     }
 
     std::ofstream jsonOutFile(fileName);
