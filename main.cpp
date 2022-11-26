@@ -8,11 +8,15 @@
 #include <fstream>
 #include "json.hpp"
 
-void welcomeDashboard();
+void displayWelcomeDshbrd();
 void loginOrSignup();
 
 void doSignup();
 void doLogin();
+void doLogout(std::string, std::string, char);
+
+void displayStudentDshbrd(std::string fullName, std::string uniID, char occup);
+
 void exitProgram();
 
 void getFileName(std::string &fileName);
@@ -36,7 +40,7 @@ void newThematicBreak(char symbol);
 
 int main()
 {
-    welcomeDashboard();
+    displayWelcomeDshbrd();
     return 0;
 }
 
@@ -66,7 +70,7 @@ namespace SIS
     };
 }
 
-void welcomeDashboard()
+void displayWelcomeDshbrd()
 {
     using std::cout;
     char choice;
@@ -101,6 +105,7 @@ void welcomeDashboard()
 
 void loginOrSignup()
 {
+    using std::cin;
     using std::cout;
     int choice;
 
@@ -110,7 +115,9 @@ void loginOrSignup()
     cout << "\n> Exit (3)";
 
     cout << "\n\n: ";
-    std::cin >> choice;
+    cin >> choice;
+    cin.ignore(1000, '\n');
+
     switch (choice)
     {
     case 1:
@@ -124,6 +131,7 @@ void loginOrSignup()
         break;
     default:
         exitProgram();
+        break;
     }
 
     return;
@@ -250,7 +258,21 @@ void doLogin()
         if (itemUniID == uniID)
         {
             getPassword(itemPassword, true);
-            return;
+            string itemFirstName = data[occup][arrIndx]["fName"];
+            string itemMiddleName = data[occup][arrIndx]["mName"];
+            string itemLastName = data[occup][arrIndx]["lName"];
+
+            string fullName = itemFirstName + " " + itemMiddleName + " " + itemLastName;
+
+            if (occup == "students")
+            {
+                displayStudentDshbrd(fullName, itemUniID, 's');
+                return;
+            }
+            else
+            {
+                return;
+            }
         }
 
         arrIndx += 1;
@@ -273,6 +295,99 @@ void doLogin()
     }
 
     exitProgram();
+    return;
+}
+
+void displayStudentDshbrd(std::string fullName, std::string uniID, char occup)
+{
+    using std::cin;
+    using std::cout;
+    using std::string;
+
+    string studentUniID = uniID;
+    string studentFullName = fullName;
+    int choice;
+
+    cout << "\n--- Welcome " << fullName << " ---";
+    pressEnterToContinue();
+
+    cout << "\nPlease choose an option you would like to do below...";
+    cout << "\n\n> Print your info (1)";
+    cout << "\n> Print your grades (2)";
+    cout << "\n> Study (3)";
+    cout << "\n> Log Out (4)";
+
+    cout << "\n\n: ";
+    cin >> choice;
+    cin.ignore(1000, '\n');
+
+    switch (choice)
+    {
+    case 1:
+        cout << "\n- Sorry, this feature was intentionally not implemented...";
+        pressEnterToContinue();
+        cout << "\n- I (Keane) would have liked to...";
+        cout << "\n- But C++ development is not my focus as of writing (11/26/2022)...";
+        pressEnterToContinue();
+        cout << "\n- Hope you understand... re-routing you to student dashboard...";
+        pressEnterToContinue();
+
+        displayStudentDshbrd(studentFullName, studentUniID, 's');
+        break;
+    case 2:
+        cout << "\n- Sorry, this feature was intentionally not implemented...";
+        pressEnterToContinue();
+        cout << "\n- I (Keane) would have liked to...";
+        cout << "\n- But C++ development is not my focus as of writing (11/26/2022)...";
+        pressEnterToContinue();
+        cout << "\n- Hope you understand... re-routing you to student dashboard...";
+        pressEnterToContinue();
+
+        displayStudentDshbrd(studentFullName, studentUniID, 's');
+        break;
+    case 3:
+        cout << "\n Temp";
+        break;
+    case 4:
+        doLogout(studentFullName, studentUniID, 's');
+        break;
+    }
+
+    return;
+}
+
+void doLogout(std::string fullName, std::string uniID, char occup)
+{
+    using std::cin;
+    using std::cout;
+
+    char choice;
+    cout << "\nAre you sure you want to log-out?";
+    cout << "\n(y/n): ";
+    cin >> choice;
+    cin.ignore(1000, '\n');
+
+    if (isYes(choice))
+    {
+        cout << "\nRe-routing you to welcome dashboard...";
+        pressEnterToContinue();
+
+        cout << "\n--- Logging out as " + fullName + " ---";
+        pressEnterToContinue();
+
+        displayWelcomeDshbrd();
+        return;
+    }
+
+    switch (occup)
+    {
+    case 's':
+        displayStudentDshbrd(fullName, uniID, 's');
+        break;
+    case 't':
+        break;
+    }
+
     return;
 }
 
@@ -446,6 +561,7 @@ void getPassword(std::string &password, bool isLoggingIn)
             cout << "\nLogged in successfully...";
             pressEnterToContinue();
 
+            newThematicBreak('*');
             return;
         }
         cout << "\nPassword entered does not match!";
