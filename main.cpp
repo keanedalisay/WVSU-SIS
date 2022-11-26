@@ -13,7 +13,7 @@ void loginOrSignup();
 
 void doSignup();
 void doLogin();
-void doLogout(std::string, std::string, char);
+void doLogout(std::string fullname, std::string uniID, char occup);
 
 void displayStudentDshbrd(std::string fullName, std::string uniID, char occup);
 
@@ -24,7 +24,7 @@ void getWhatName(std::string whatName, std::string &name);
 void getUniID(std::string &uniID);
 void getPassword(std::string &password, bool isLoggingIn);
 
-void getOccup(std::string &occup);
+void getOccupation(std::string &occup);
 
 void getYearLevel(std::string &yrLvl, std::string &course);
 void getCourse(std::string &course);
@@ -76,12 +76,14 @@ void displayWelcomeDshbrd()
     char choice;
 
     newThematicBreak('-');
+
     cout << "\nWelcome to WVSU-SIS.";
     pressEnterToContinue();
-    cout << "\nWould you like to know the history of this program? (y/n): ";
 
+    cout << "\nWould you like to know the history of this program? (y/n): ";
     std::cin >> choice;
     std::cin.ignore(1000, '\n');
+
     if (isYes(choice))
     {
         cout << "\n- WVSU-SIS stands for West Visayas State University Student Information System (not official)...";
@@ -157,6 +159,7 @@ void doSignup()
     getFileName(fileName);
 
     std::ifstream jsonInpFile(fileName);
+
     if (isNotEmptyFile(jsonInpFile))
     {
         jsonInpFile >> data;
@@ -169,6 +172,7 @@ void doSignup()
     cout << "\n(y/n): ";
     cin >> choice;
     cin.ignore(1000, '\n');
+
     if (isYes(choice))
     {
         getWhatName("middle", mName);
@@ -178,7 +182,7 @@ void doSignup()
 
     getUniID(uniID);
     getPassword(password, false);
-    getOccup(occup);
+    getOccupation(occup);
 
     int arrIndx = 0;
     for (auto &item : data[occup].items())
@@ -248,7 +252,7 @@ void doLogin()
     jsonInpFile >> data;
 
     getUniID(uniID);
-    getOccup(occup);
+    getOccupation(occup);
 
     for (auto &item : data[occup].items())
     {
@@ -258,6 +262,7 @@ void doLogin()
         if (itemUniID == uniID)
         {
             getPassword(itemPassword, true);
+
             string itemFirstName = data[occup][arrIndx]["fName"];
             string itemMiddleName = data[occup][arrIndx]["mName"];
             string itemLastName = data[occup][arrIndx]["lName"];
@@ -324,16 +329,6 @@ void displayStudentDshbrd(std::string fullName, std::string uniID, char occup)
     switch (choice)
     {
     case 1:
-        cout << "\n- Sorry, this feature was intentionally not implemented...";
-        pressEnterToContinue();
-        cout << "\n- I (Keane) would have liked to...";
-        cout << "\n- But C++ development is not my focus as of writing (11/26/2022)...";
-        pressEnterToContinue();
-        cout << "\n- Hope you understand... re-routing you to student dashboard...";
-        pressEnterToContinue();
-
-        displayStudentDshbrd(studentFullName, studentUniID, 's');
-        break;
     case 2:
         cout << "\n- Sorry, this feature was intentionally not implemented...";
         pressEnterToContinue();
@@ -416,7 +411,7 @@ void getWhatName(std::string whatName, std::string &name)
     return;
 }
 
-void getOccup(std::string &occup)
+void getOccupation(std::string &occup)
 {
     char occupChoice;
     std::cout << "\nAre you a student or teacher?";
