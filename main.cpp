@@ -18,7 +18,7 @@ void exitProgram();
 void getFileName(std::string &fileName);
 void getWhatName(std::string whatName, std::string &name);
 void getUniID(std::string &uniID);
-void getPassword(std::string &password);
+void getPassword(std::string &password, bool isLoggingIn);
 
 void getOccup(std::string &occup);
 
@@ -157,7 +157,8 @@ void doSignup()
 
     getWhatName("first", fName);
 
-    cout << "\nDo you have a middle name? (y/n): ";
+    cout << "\nDo you have a middle name?";
+    cout << "\n(y/n): ";
     cin >> choice;
     cin.ignore(1000, '\n');
     if (isYes(choice))
@@ -168,7 +169,7 @@ void doSignup()
     getWhatName("last", lName);
 
     getUniID(uniID);
-    getPassword(password);
+    getPassword(password, false);
     getOccup(occup);
 
     int arrIndx = 0;
@@ -220,6 +221,59 @@ void doSignup()
 
 void doLogin()
 {
+    newThematicBreak('*');
+
+    using std::cin;
+    using std::cout;
+    using std::string;
+    using json = nlohmann::ordered_json;
+
+    json data;
+    string fileName;
+    string occup, uniID, password;
+    char choice;
+    int arrIndx = 0;
+
+    getFileName(fileName);
+
+    std::ifstream jsonInpFile(fileName);
+    jsonInpFile >> data;
+
+    getUniID(uniID);
+    getOccup(occup);
+
+    for (auto &item : data[occup].items())
+    {
+        string itemUniID = data[occup][arrIndx]["uniID"];
+        string itemPassword = data[occup][arrIndx]["password"];
+
+        if (itemUniID == uniID)
+        {
+            getPassword(itemPassword, true);
+            return;
+        }
+
+        arrIndx += 1;
+        continue;
+    }
+
+    cout << "\nThe university identification number you entered...";
+    cout << "\nDoes not match any of our pre-existing users...";
+    pressEnterToContinue();
+
+    cout << "\nWould you like to try and log-in again?";
+    cout << "\n(y/n): ";
+    cin >> choice;
+    cin.ignore(1000, '\n');
+
+    if (isYes(choice))
+    {
+        doLogin();
+        return;
+    }
+
+    exitProgram();
+    return;
 }
 
 void exitProgram()
@@ -371,13 +425,37 @@ void getUniID(std::string &uniID)
     return;
 }
 
-void getPassword(std::string &password)
+void getPassword(std::string &password, bool isLoggingIn)
 {
     using std::cin;
     using std::cout;
     using std::string;
 
     string firstPassword, finalPassword;
+
+    if (isLoggingIn)
+    {
+        string itemPassword = password;
+
+        cout << "\nEnter your password: ";
+        cin >> finalPassword;
+        cin.ignore(1000, '\n');
+
+        if (finalPassword == itemPassword)
+        {
+            cout << "\nLogged in successfully...";
+            pressEnterToContinue();
+
+            return;
+        }
+        cout << "\nPassword entered does not match!";
+        cout << "\nRe-routing you to re-enter password...";
+        pressEnterToContinue();
+
+        getPassword(itemPassword, true);
+        return;
+    }
+
     cout << "\nEnter your new password: ";
     cin >> firstPassword;
     cin.ignore(1000, '\n');
@@ -397,8 +475,10 @@ void getPassword(std::string &password)
         cout << "\nPassword entered does not match!\n";
         cout << "\nRe-routing you to re-enter password...";
         pressEnterToContinue();
-        getPassword(password);
+        getPassword(password, false);
     }
+
+    return;
 }
 
 bool isNotEmptyFile(std::ifstream &file)
@@ -419,7 +499,7 @@ bool isYes(char choice)
 void pressEnterToContinue()
 {
     std::cin.clear();
-    std::cout << "\nPress enter to continue... ";
+    std::cout << "\n\nPress enter to continue... ";
     std::cin.ignore(1000, '\n');
     return;
 }
