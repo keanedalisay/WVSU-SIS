@@ -20,29 +20,244 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID);
 
 void exitProgram();
 
-void getFileName(std::string &fileName);
-void getWhatName(std::string whatName, std::string &name);
-void getUniID(std::string &uniID);
-void getPassword(std::string &password, bool isLoggingIn);
-
-void getOccupation(std::string &occup);
-
-void getYearLevel(std::string &yearLevel, std::string &course);
-void getCourse(std::string &course);
-
-void getSubjects(std::string subjects[]);
-
-bool isNotEmptyFile(std::ifstream &file);
-bool isYes(char choice);
-
-void pressEnterToContinue();
-
-void newThematicBreak(char symbol);
-
-int main()
+namespace feat
 {
-    displayWelcomeDshbrd();
-    return 0;
+    void pressEnterToContinue()
+    {
+        std::cin.clear();
+        std::cout << "\n\nPress enter to continue... ";
+        std::cin.ignore(1000, '\n');
+        return;
+    }
+
+    void newThematicBreak(char symbol)
+    {
+        using std::cout;
+        cout << "\n";
+        char dash = symbol;
+        int dashCount = 0;
+        while (dashCount <= 50)
+        {
+            cout << dash;
+            dashCount += 1;
+        }
+        cout << "\n";
+        return;
+    }
+}
+
+namespace help
+{
+    void getFileName(std::string &fileName)
+    {
+        std::cout << "\nEnter your file name.";
+        std::cout << "\n(must end with .json): ";
+        std::cin >> fileName;
+        std::cin.ignore(1000, '\n');
+        return;
+    }
+
+    void getWhatName(std::string whatName, std::string &name)
+    {
+        std::cout << "\nEnter your " + whatName + " name: ";
+        std::getline(std::cin, name);
+        return;
+    }
+
+    void getOccupation(std::string &occup)
+    {
+        char occupChoice;
+        std::cout << "\nAre you a student or teacher?";
+        std::cout << "\n(s/t): ";
+        std::cin >> occupChoice;
+        std::cin.ignore(1000, '\n');
+
+        if (tolower(occupChoice) == 's')
+            occup = "students";
+        else if (tolower(occupChoice) == 't')
+            occup = "teachers";
+        else
+            exitProgram();
+
+        return;
+    }
+
+    void getYearLevel(std::string &yearLevel, std::string &course)
+    {
+        using std::cin;
+        using std::cout;
+        char crntEdu;
+
+        cout << "\nAre you an elementary, junior high, senior high, or college student?";
+        cout << "\n(e/j/s/c): ";
+        cin >> crntEdu;
+        cin.ignore(1000, '\n');
+
+        switch (tolower(crntEdu))
+        {
+        case 'e':
+        {
+            cout << "\nWhat year level are you currently?";
+            cout << "\n(specify Grade 6 if so): ";
+            std::getline(cin, yearLevel);
+            break;
+        }
+        case 'j':
+        {
+            cout << "\nWhat year level are you currently?";
+            cout << "\n(specify Grade 7 if so): ";
+            std::getline(cin, yearLevel);
+            break;
+        }
+        case 's':
+        {
+            cout << "\nWhat year level are you currently?";
+            cout << "\n(specify Grade 11 if so): ";
+            std::getline(cin, yearLevel);
+            help::getCourse(course);
+            break;
+        }
+        case 'c':
+        {
+            cout << "\nWhat college level are you currently?";
+            cout << "\n(specify Freshman if so): ";
+            std::getline(cin, yearLevel);
+            help::getCourse(course);
+            break;
+        }
+        }
+
+        return;
+    }
+
+    void getCourse(std::string &course)
+    {
+        std::cout << "\nWhat senior high or college course are you currently taking?";
+        std::cout << "\n(STEM/Bachelor of...): ";
+        std::getline(std::cin, course);
+        return;
+    }
+
+    void getSubjects(std::string subjects[])
+    {
+        using std::cin;
+        using std::cout;
+
+        int numOfSubj, arrIndx = 0;
+        cout << "\nSpecify the number of subjects you are teaching currently.";
+        cout << "\n(max is 5): ";
+        cin >> numOfSubj;
+        cin.ignore(1000, '\n');
+
+        if (numOfSubj > 5)
+        {
+            cout << "\nYou entered more than 5 subjects!";
+            cout << "\nRe-routing you to re-enter your subjects...";
+            feat::pressEnterToContinue();
+
+            help::getSubjects(subjects);
+            return;
+        }
+        else if (numOfSubj <= 0)
+        {
+            cout << "\nYou entered a number below or equal to 0!";
+            cout << "\nRe-routing you to re-enter your subjects...";
+            feat::pressEnterToContinue();
+
+            help::getSubjects(subjects);
+            return;
+        }
+
+        while (arrIndx < numOfSubj)
+        {
+            cout << "\nType in the subject (add one at a time): ";
+            cin >> subjects[arrIndx];
+            cin.ignore(1000, '\n');
+            arrIndx += 1;
+        }
+
+        return;
+    }
+
+    void getUniID(std::string &uniID)
+    {
+        std::cout << "\nType in your university identification number: ";
+        std::cin >> uniID;
+        std::cin.ignore(1000, '\n');
+        return;
+    }
+
+    void getPassword(std::string &password, bool isLoggingIn)
+    {
+        using std::cin;
+        using std::cout;
+        using std::string;
+
+        string firstPassword, finalPassword;
+
+        if (isLoggingIn)
+        {
+            string itemPassword = password;
+
+            cout << "\nEnter your password: ";
+            cin >> finalPassword;
+            cin.ignore(1000, '\n');
+
+            if (finalPassword == itemPassword)
+            {
+                cout << "\nLogged in successfully...";
+                feat::pressEnterToContinue();
+
+                feat::newThematicBreak('*');
+                return;
+            }
+            cout << "\nPassword entered does not match!";
+            cout << "\nRe-routing you to re-enter password...";
+            feat::pressEnterToContinue();
+
+            help::getPassword(itemPassword, true);
+            return;
+        }
+
+        cout << "\nEnter your new password: ";
+        cin >> firstPassword;
+        cin.ignore(1000, '\n');
+
+        cout << "\nEnter your password again: ";
+        cin >> finalPassword;
+        cin.ignore(1000, '\n');
+
+        if (firstPassword == finalPassword)
+        {
+            password = finalPassword;
+            cout << "\nPassword entered matches...";
+            feat::pressEnterToContinue();
+        }
+        else
+        {
+            cout << "\nPassword entered does not match!\n";
+            cout << "\nRe-routing you to re-enter password...";
+            feat::pressEnterToContinue();
+            help::getPassword(password, false);
+        }
+
+        return;
+    }
+
+    bool isNotEmptyFile(std::ifstream &file)
+    {
+        return file.peek() != std::ifstream::traits_type::eof();
+    }
+
+    bool isYes(char choice)
+    {
+        char finalChoice = tolower(choice);
+        if (finalChoice == 'y')
+        {
+            return true;
+        }
+        return false;
+    }
 }
 
 namespace SIS
@@ -71,12 +286,20 @@ namespace SIS
     };
 }
 
+int main()
+{
+    displayWelcomeDshbrd();
+    return 0;
+}
+
 void displayWelcomeDshbrd()
 {
+    using feat::pressEnterToContinue;
     using std::cout;
+
     char choice;
 
-    newThematicBreak('-');
+    feat::newThematicBreak('-');
 
     cout << "\nWelcome to WVSU-SIS.";
     pressEnterToContinue();
@@ -85,7 +308,7 @@ void displayWelcomeDshbrd()
     std::cin >> choice;
     std::cin.ignore(1000, '\n');
 
-    if (isYes(choice))
+    if (help::isYes(choice))
     {
         cout << "\n- WVSU-SIS stands for West Visayas State University Student Information System (not official)...";
         cout << "\n- This program was spearheaded by Keane Dalisay along with Nel Alanan...";
@@ -142,12 +365,13 @@ void loginOrSignup()
 
 void doSignup()
 {
-    newThematicBreak('*');
-
+    using help::getWhatName;
     using std::cin;
     using std::cout;
     using std::string;
     using json = nlohmann::ordered_json;
+
+    feat::newThematicBreak('*');
 
     string fName, mName, lName, fileName;
     string occup, uniID, password;
@@ -157,10 +381,10 @@ void doSignup()
 
     json data;
 
-    getFileName(fileName);
+    help::getFileName(fileName);
     std::ifstream jsonInpFile(fileName);
 
-    if (isNotEmptyFile(jsonInpFile))
+    if (help::isNotEmptyFile(jsonInpFile))
     {
         jsonInpFile >> data;
     }
@@ -173,7 +397,7 @@ void doSignup()
     cin >> choice;
     cin.ignore(1000, '\n');
 
-    if (isYes(choice))
+    if (help::isYes(choice))
     {
         getWhatName("middle", mName);
     }
@@ -182,9 +406,9 @@ void doSignup()
 
     string fullName = fName + " " + mName + " " + lName;
 
-    getUniID(uniID);
-    getPassword(password, false);
-    getOccupation(occup);
+    help::getUniID(uniID);
+    help::getPassword(password, false);
+    help::getOccupation(occup);
 
     int arrIndx = 0;
     for (auto &item : data[occup].items())
@@ -194,7 +418,7 @@ void doSignup()
 
     if (occup == "students")
     {
-        getYearLevel(yearLevel, course);
+        help::getYearLevel(yearLevel, course);
         SIS::stdntTemp stdnt = {fName, mName, lName, uniID, yearLevel, course, password};
 
         data[occup][arrIndx] = {
@@ -210,13 +434,13 @@ void doSignup()
         jsonOutFile << data.dump(2, ' ');
         jsonOutFile.close();
 
-        newThematicBreak('*');
+        feat::newThematicBreak('*');
 
         displayStudentDshbrd(fullName, uniID);
         return;
     }
 
-    getSubjects(subjects);
+    help::getSubjects(subjects);
     SIS::teachrTemp teachr = {
         fName,
         mName,
@@ -237,7 +461,7 @@ void doSignup()
     jsonOutFile << data.dump(2, ' ');
     jsonOutFile.close();
 
-    newThematicBreak('*');
+    feat::newThematicBreak('*');
 
     displayTeacherDshbrd(fullName, uniID);
     return;
@@ -245,12 +469,12 @@ void doSignup()
 
 void doLogin()
 {
-    newThematicBreak('*');
-
     using std::cin;
     using std::cout;
     using std::string;
     using json = nlohmann::ordered_json;
+
+    feat::newThematicBreak('*');
 
     string fileName;
     string occup, uniID, password;
@@ -259,12 +483,12 @@ void doLogin()
 
     json data;
 
-    getFileName(fileName);
+    help::getFileName(fileName);
     std::ifstream jsonInpFile(fileName);
     jsonInpFile >> data;
 
-    getUniID(uniID);
-    getOccupation(occup);
+    help::getUniID(uniID);
+    help::getOccupation(occup);
 
     for (auto &item : data[occup].items())
     {
@@ -273,7 +497,7 @@ void doLogin()
 
         if (itemUniID == uniID)
         {
-            getPassword(itemPassword, true);
+            help::getPassword(itemPassword, true);
 
             string itemFirstName = data[occup][arrIndx]["fName"];
             string itemMiddleName = data[occup][arrIndx]["mName"];
@@ -296,14 +520,14 @@ void doLogin()
 
     cout << "\nThe university identification number you entered...";
     cout << "\nDoes not match any of our pre-existing users...";
-    pressEnterToContinue();
+    feat::pressEnterToContinue();
 
     cout << "\nWould you like to try and log-in again?";
     cout << "\n(y/n): ";
     cin >> choice;
     cin.ignore(1000, '\n');
 
-    if (isYes(choice))
+    if (help::isYes(choice))
     {
         doLogin();
         return;
@@ -315,6 +539,7 @@ void doLogin()
 
 void displayStudentDshbrd(std::string fullName, std::string uniID)
 {
+    using feat::pressEnterToContinue;
     using std::cin;
     using std::cout;
     using std::string;
@@ -363,6 +588,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
 
 void displayTeacherDshbrd(std::string fullName, std::string uniID)
 {
+    using feat::pressEnterToContinue;
     using std::cin;
     using std::cout;
     using std::string;
@@ -411,6 +637,7 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
 
 void doLogout(std::string fullName, std::string uniID, char occup)
 {
+    using feat::pressEnterToContinue;
     using std::cin;
     using std::cout;
 
@@ -420,7 +647,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
     cin >> choice;
     cin.ignore(1000, '\n');
 
-    if (isYes(choice))
+    if (help::isYes(choice))
     {
         cout << "\nRe-routing you to welcome dashboard...";
         pressEnterToContinue();
@@ -446,243 +673,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
 
 void exitProgram()
 {
-    newThematicBreak('-');
+    feat::newThematicBreak('-');
     std::cout << "\nSuccessfully exited program.\n\n";
-    return;
-}
-
-// helper functions below this comment
-
-void getFileName(std::string &fileName)
-{
-    std::cout << "\nEnter your file name.";
-    std::cout << "\n(must end with .json): ";
-    std::cin >> fileName;
-    std::cin.ignore(1000, '\n');
-    return;
-}
-
-void getWhatName(std::string whatName, std::string &name)
-{
-    std::cout << "\nEnter your " + whatName + " name: ";
-    std::getline(std::cin, name);
-    return;
-}
-
-void getOccupation(std::string &occup)
-{
-    char occupChoice;
-    std::cout << "\nAre you a student or teacher?";
-    std::cout << "\n(s/t): ";
-    std::cin >> occupChoice;
-    std::cin.ignore(1000, '\n');
-
-    if (tolower(occupChoice) == 's')
-        occup = "students";
-    else if (tolower(occupChoice) == 't')
-        occup = "teachers";
-    else
-        exitProgram();
-
-    return;
-}
-
-void getYearLevel(std::string &yearLevel, std::string &course)
-{
-    using std::cin;
-    using std::cout;
-    char crntEdu;
-
-    cout << "\nAre you an elementary, junior high, senior high, or college student?";
-    cout << "\n(e/j/s/c): ";
-    cin >> crntEdu;
-    cin.ignore(1000, '\n');
-
-    switch (tolower(crntEdu))
-    {
-    case 'e':
-    {
-        cout << "\nWhat year level are you currently?";
-        cout << "\n(specify Grade 6 if so): ";
-        std::getline(cin, yearLevel);
-        break;
-    }
-    case 'j':
-    {
-        cout << "\nWhat year level are you currently?";
-        cout << "\n(specify Grade 7 if so): ";
-        std::getline(cin, yearLevel);
-        break;
-    }
-    case 's':
-    {
-        cout << "\nWhat year level are you currently?";
-        cout << "\n(specify Grade 11 if so): ";
-        std::getline(cin, yearLevel);
-        getCourse(course);
-        break;
-    }
-    case 'c':
-    {
-        cout << "\nWhat college level are you currently?";
-        cout << "\n(specify Freshman if so): ";
-        std::getline(cin, yearLevel);
-        getCourse(course);
-        break;
-    }
-    }
-
-    return;
-}
-
-void getCourse(std::string &course)
-{
-    std::cout << "\nWhat senior high or college course are you currently taking?";
-    std::cout << "\n(STEM/Bachelor of...): ";
-    std::getline(std::cin, course);
-    return;
-}
-
-void getSubjects(std::string subjects[])
-{
-    using std::cin;
-    using std::cout;
-
-    int numOfSubj, arrIndx = 0;
-    cout << "\nSpecify the number of subjects you are teaching currently.";
-    cout << "\n(max is 5): ";
-    cin >> numOfSubj;
-    cin.ignore(1000, '\n');
-
-    if (numOfSubj > 5)
-    {
-        cout << "\nYou entered more than 5 subjects!";
-        cout << "\nRe-routing you to re-enter your subjects...";
-        pressEnterToContinue();
-
-        getSubjects(subjects);
-        return;
-    }
-    else if (numOfSubj <= 0)
-    {
-        cout << "\nYou entered a number below or equal to 0!";
-        cout << "\nRe-routing you to re-enter your subjects...";
-        pressEnterToContinue();
-
-        getSubjects(subjects);
-        return;
-    }
-
-    while (arrIndx < numOfSubj)
-    {
-        cout << "\nType in the subject (add one at a time): ";
-        cin >> subjects[arrIndx];
-        cin.ignore(1000, '\n');
-        arrIndx += 1;
-    }
-
-    return;
-}
-
-void getUniID(std::string &uniID)
-{
-    std::cout << "\nType in your university identification number: ";
-    std::cin >> uniID;
-    std::cin.ignore(1000, '\n');
-    return;
-}
-
-void getPassword(std::string &password, bool isLoggingIn)
-{
-    using std::cin;
-    using std::cout;
-    using std::string;
-
-    string firstPassword, finalPassword;
-
-    if (isLoggingIn)
-    {
-        string itemPassword = password;
-
-        cout << "\nEnter your password: ";
-        cin >> finalPassword;
-        cin.ignore(1000, '\n');
-
-        if (finalPassword == itemPassword)
-        {
-            cout << "\nLogged in successfully...";
-            pressEnterToContinue();
-
-            newThematicBreak('*');
-            return;
-        }
-        cout << "\nPassword entered does not match!";
-        cout << "\nRe-routing you to re-enter password...";
-        pressEnterToContinue();
-
-        getPassword(itemPassword, true);
-        return;
-    }
-
-    cout << "\nEnter your new password: ";
-    cin >> firstPassword;
-    cin.ignore(1000, '\n');
-
-    cout << "\nEnter your password again: ";
-    cin >> finalPassword;
-    cin.ignore(1000, '\n');
-
-    if (firstPassword == finalPassword)
-    {
-        password = finalPassword;
-        cout << "\nPassword entered matches...";
-        pressEnterToContinue();
-    }
-    else
-    {
-        cout << "\nPassword entered does not match!\n";
-        cout << "\nRe-routing you to re-enter password...";
-        pressEnterToContinue();
-        getPassword(password, false);
-    }
-
-    return;
-}
-
-bool isNotEmptyFile(std::ifstream &file)
-{
-    return file.peek() != std::ifstream::traits_type::eof();
-}
-
-bool isYes(char choice)
-{
-    char finalChoice = tolower(choice);
-    if (finalChoice == 'y')
-    {
-        return true;
-    }
-    return false;
-}
-
-void pressEnterToContinue()
-{
-    std::cin.clear();
-    std::cout << "\n\nPress enter to continue... ";
-    std::cin.ignore(1000, '\n');
-    return;
-}
-
-void newThematicBreak(char symbol)
-{
-    using std::cout;
-    cout << "\n";
-    char dash = symbol;
-    int dashCount = 0;
-    while (dashCount <= 50)
-    {
-        cout << dash;
-        dashCount += 1;
-    }
-    cout << "\n";
     return;
 }
