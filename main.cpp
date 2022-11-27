@@ -743,6 +743,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
         displayStudentDshbrd(fullName, uniID);
         break;
     case 't':
+        displayTeacherDshbrd(fullName, uniID);
         break;
     }
 
