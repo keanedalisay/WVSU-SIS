@@ -725,8 +725,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     cout << "\nPlease choose an option you would like to do below...";
     cout << "\n\n> Print your info (1)";
     cout << "\n> Print your grades (2)";
-    cout << "\n> Study (3)";
-    cout << "\n> Log Out (4)";
+    cout << "\n> Log Out (3)";
 
     cout << "\n\n: ";
     cin >> choice;
@@ -750,9 +749,6 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
         displayStudentDshbrd(studentFullName, studentUniID);
         break;
     case 3:
-        cout << "\n Temp";
-        break;
-    case 4:
         doLogout(studentFullName, studentUniID, 's');
         break;
     }
@@ -778,8 +774,7 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
     cout << "\nPlease choose an option you would like to do below...";
     cout << "\n\n> Print your info (1)";
     cout << "\n> Assign student grades (2)";
-    cout << "\n> Drink coffee (3)";
-    cout << "\n> Log Out (4)";
+    cout << "\n> Log Out (3)";
 
     cout << "\n\n: ";
     cin >> choice;
@@ -803,9 +798,6 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
         displayTeacherDshbrd(teacherFullName, teacherUniID);
         break;
     case 3:
-        cout << "\n Temp";
-        break;
-    case 4:
         doLogout(teacherFullName, teacherUniID, 't');
         break;
     }
