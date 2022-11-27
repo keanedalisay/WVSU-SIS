@@ -109,7 +109,7 @@ namespace help
             cout << "\nRe-routing you to re-enter your subjects...";
             feat::pressEnterToContinue();
 
-            help::getSubjects(subjects);
+            getSubjects(subjects);
             return;
         }
         else if (numOfSubj <= 0)
@@ -118,7 +118,7 @@ namespace help
             cout << "\nRe-routing you to re-enter your subjects...";
             feat::pressEnterToContinue();
 
-            help::getSubjects(subjects);
+            getSubjects(subjects);
             return;
         }
 
@@ -217,7 +217,7 @@ namespace help
             cout << "\nRe-routing you to re-enter password...";
             feat::pressEnterToContinue();
 
-            help::getPassword(itemPassword, true);
+            getPassword(itemPassword, true);
             return;
         }
 
@@ -240,7 +240,7 @@ namespace help
             cout << "\nPassword entered does not match!\n";
             cout << "\nRe-routing you to re-enter password...";
             feat::pressEnterToContinue();
-            help::getPassword(password, false);
+            getPassword(password, false);
         }
 
         return;
@@ -301,7 +301,6 @@ namespace jsonManip
         {
             jsonInpFile >> data;
         }
-
         jsonInpFile.close();
         return;
     }
@@ -399,12 +398,10 @@ namespace jsonManip
     {
         using std::string;
         json data;
-
         string itemFstName, itemMidName, itemLstName;
         string itemUniID, itemYearLevel, itemCourse;
 
         getData(data, fileName);
-
         int arrIndx = 0;
         for (auto &item : data["students"].items())
         {
@@ -416,9 +413,8 @@ namespace jsonManip
                 itemMidName = data["students"][arrIndx]["mName"];
                 itemLstName = data["students"][arrIndx]["lName"];
 
-                itemYearLevel = data["students"][arrIndx]["yrLvl"];
+                itemYearLevel = data["students"][arrIndx]["yearLevel"];
                 itemCourse = data["students"][arrIndx]["course"];
-
                 break;
             }
 
@@ -450,14 +446,17 @@ namespace jsonManip
         for (auto &item : data[occup].items())
         {
             string itemUniID = data[occup][arrIndx]["uniID"];
-
             if (itemUniID == uniID)
             {
                 string fName = data[occup][arrIndx]["fName"];
                 string mName = data[occup][arrIndx]["mName"];
                 string lName = data[occup][arrIndx]["lName"];
 
-                fullName = fName + " " + mName + " " + lName;
+                if (mName == "N/A")
+                    fullName = fName + " " + lName;
+                else
+                    fullName = fName + " " + mName + " " + lName;
+
                 break;
             }
 
@@ -548,14 +547,15 @@ void loginOrSignup()
 
 void doSignup()
 {
+    using feat::newThematicBreak;
     using help::getWhatName;
     using std::cin;
     using std::cout;
     using std::string;
 
-    feat::newThematicBreak('*');
+    newThematicBreak('*');
 
-    string fName, mName, lName, fileName;
+    string fName, mName, lName, fullName, fileName;
     string occup, uniID, password;
     string yearLevel, course;
     string subjects[5];
@@ -571,13 +571,16 @@ void doSignup()
     cin.ignore(1000, '\n');
 
     if (help::isYes(choice))
-    {
         getWhatName("middle", mName);
-    }
+    else
+        mName = "N/A";
 
     getWhatName("last", lName);
 
-    string fullName = fName + " " + mName + " " + lName;
+    if (mName == "N/A")
+        fullName = fName + " " + lName;
+    else
+        fullName = fName + " " + mName + " " + lName;
 
     help::getUniID(uniID);
     help::getPassword(password, false);
@@ -590,7 +593,7 @@ void doSignup()
 
         jsonManip::storeStdnt(stdnt, fileName);
 
-        feat::newThematicBreak('*');
+        newThematicBreak('*');
         displayStudentDshbrd(fullName, uniID);
         return;
     }
@@ -606,7 +609,7 @@ void doSignup()
 
     jsonManip::storeTeachr(teachr, fileName);
 
-    feat::newThematicBreak('*');
+    newThematicBreak('*');
     displayTeacherDshbrd(fullName, uniID);
     return;
 }
@@ -776,7 +779,11 @@ void printStudentInfo(std::string uniID)
 
     cout << "\n----- Printing student data -----";
 
-    cout << "\n\nFullname: " + stdnt.fName + " " + stdnt.mName + " " + stdnt.lName;
+    if (stdnt.mName == "N/A")
+        cout << "\n\nFullname: " + stdnt.fName + " " + stdnt.lName;
+    else
+        cout << "\n\nFullname: " + stdnt.fName + " " + stdnt.mName + " " + stdnt.lName;
+
     cout << "\nWVSU ID Code: " + stdnt.uniID;
     cout << "\nYear Level: " + stdnt.yearLevel;
     cout << "\nCourse: " + stdnt.course;
