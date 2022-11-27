@@ -15,7 +15,7 @@ void doSignup();
 void doLogin();
 void doLogout(std::string fullname, std::string uniID, char occup);
 
-void displayStudentDshbrd(std::string fullName, std::string uniID, char occup);
+void displayStudentDshbrd(std::string fullName, std::string uniID);
 
 void exitProgram();
 
@@ -180,6 +180,8 @@ void doSignup()
 
     getWhatName("last", lName);
 
+    string fullName = fName + " " + mName + " " + lName;
+
     getUniID(uniID);
     getPassword(password, false);
     getOccupation(occup);
@@ -202,6 +204,14 @@ void doSignup()
             {"yrLvl", stdnt.yrLvl},
             {"course", stdnt.course},
             {"password", stdnt.password}};
+
+        std::ofstream jsonOutFile(fileName);
+        jsonOutFile << data.dump(2, ' ');
+        jsonOutFile.close();
+
+        newThematicBreak('*');
+
+        displayStudentDshbrd(fullName, stdnt.uniID);
     }
     else if (occup == "teachers")
     {
@@ -222,12 +232,6 @@ void doSignup()
             {"subjects", teachr.subjects},
             {"password", teachr.password}};
     }
-
-    std::ofstream jsonOutFile(fileName);
-    jsonOutFile << data.dump(2, ' ');
-    jsonOutFile.close();
-
-    newThematicBreak('*');
     return;
 }
 
@@ -271,7 +275,7 @@ void doLogin()
 
             if (occup == "students")
             {
-                displayStudentDshbrd(fullName, itemUniID, 's');
+                displayStudentDshbrd(fullName, itemUniID);
                 return;
             }
             else
@@ -303,7 +307,7 @@ void doLogin()
     return;
 }
 
-void displayStudentDshbrd(std::string fullName, std::string uniID, char occup)
+void displayStudentDshbrd(std::string fullName, std::string uniID)
 {
     using std::cin;
     using std::cout;
@@ -313,7 +317,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID, char occup)
     string studentFullName = fullName;
     int choice;
 
-    cout << "\n--- Welcome " << fullName << " ---";
+    cout << "\n----- Welcome " << fullName << " -----";
     pressEnterToContinue();
 
     cout << "\nPlease choose an option you would like to do below...";
@@ -338,7 +342,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID, char occup)
         cout << "\n- Hope you understand... re-routing you to student dashboard...";
         pressEnterToContinue();
 
-        displayStudentDshbrd(studentFullName, studentUniID, 's');
+        displayStudentDshbrd(studentFullName, studentUniID);
         break;
     case 3:
         cout << "\n Temp";
@@ -367,7 +371,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
         cout << "\nRe-routing you to welcome dashboard...";
         pressEnterToContinue();
 
-        cout << "\n--- Logging out as " + fullName + " ---";
+        cout << "\n----- Logging out as " + fullName + " -----";
         pressEnterToContinue();
 
         displayWelcomeDshbrd();
@@ -377,7 +381,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
     switch (occup)
     {
     case 's':
-        displayStudentDshbrd(fullName, uniID, 's');
+        displayStudentDshbrd(fullName, uniID);
         break;
     case 't':
         break;
