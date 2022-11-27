@@ -667,8 +667,8 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     using std::cout;
     using std::string;
 
-    string teacherUniID = uniID;
-    string teacherFullName = fullName;
+    string studentUniID = uniID;
+    string studentFullName = fullName;
     int choice;
 
     cout << "\n----- Welcome " << fullName << " -----";
@@ -688,7 +688,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     {
     case 1:
         printStudentInfo(uniID);
-        displayStudentDshbrd(teacherFullName, teacherUniID);
+        displayStudentDshbrd(studentFullName, studentUniID);
         break;
     case 2:
         cout << "\n- Sorry, this feature was intentionally not implemented...";
@@ -699,13 +699,13 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
         cout << "\n- Hope you understand... re-routing you to student dashboard...";
         pressEnterToContinue();
 
-        displayStudentDshbrd(teacherFullName, teacherUniID);
+        displayStudentDshbrd(studentFullName, studentUniID);
         break;
     case 3:
         cout << "\n Temp";
         break;
     case 4:
-        doLogout(teacherFullName, teacherUniID, 's');
+        doLogout(studentFullName, studentUniID, 's');
         break;
     }
 
