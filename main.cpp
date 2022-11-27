@@ -27,7 +27,7 @@ void getPassword(std::string &password, bool isLoggingIn);
 
 void getOccupation(std::string &occup);
 
-void getYearLevel(std::string &yrLvl, std::string &course);
+void getYearLevel(std::string &yearLevel, std::string &course);
 void getCourse(std::string &course);
 
 void getSubjects(std::string subjects[]);
@@ -55,7 +55,7 @@ namespace SIS
         string mName;
         string lName;
         string uniID;
-        string yrLvl;
+        string yearLevel;
         string course;
         string password;
     };
@@ -151,14 +151,13 @@ void doSignup()
 
     string fName, mName, lName, fileName;
     string occup, uniID, password;
-    string yrLvl, course;
+    string yearLevel, course;
     string subjects[5];
     char choice;
 
     json data;
 
     getFileName(fileName);
-
     std::ifstream jsonInpFile(fileName);
 
     if (isNotEmptyFile(jsonInpFile))
@@ -195,14 +194,15 @@ void doSignup()
 
     if (occup == "students")
     {
-        getYearLevel(yrLvl, course);
-        SIS::stdntTemp stdnt = {fName, mName, lName, uniID, yrLvl, course, password};
+        getYearLevel(yearLevel, course);
+        SIS::stdntTemp stdnt = {fName, mName, lName, uniID, yearLevel, course, password};
+
         data[occup][arrIndx] = {
             {"fName", stdnt.fName},
             {"mName", stdnt.mName},
             {"lName", stdnt.lName},
             {"uniID", stdnt.uniID},
-            {"yrLvl", stdnt.yrLvl},
+            {"yearLevel", stdnt.yearLevel},
             {"course", stdnt.course},
             {"password", stdnt.password}};
 
@@ -215,34 +215,31 @@ void doSignup()
         displayStudentDshbrd(fullName, uniID);
         return;
     }
-    else if (occup == "teachers")
-    {
-        getSubjects(subjects);
-        SIS::teachrTemp teachr = {
-            fName,
-            mName,
-            lName,
-            uniID,
-            {subjects[0], subjects[1], subjects[2], subjects[3], subjects[4]},
-            password};
 
-        data[occup][arrIndx] = {
-            {"fName", teachr.fName},
-            {"mName", teachr.mName},
-            {"lName", teachr.lName},
-            {"uniID", teachr.uniID},
-            {"subjects", teachr.subjects},
-            {"password", teachr.password}};
+    getSubjects(subjects);
+    SIS::teachrTemp teachr = {
+        fName,
+        mName,
+        lName,
+        uniID,
+        {subjects[0], subjects[1], subjects[2], subjects[3], subjects[4]},
+        password};
 
-        std::ofstream jsonOutFile(fileName);
-        jsonOutFile << data.dump(2, ' ');
-        jsonOutFile.close();
+    data[occup][arrIndx] = {
+        {"fName", teachr.fName},
+        {"mName", teachr.mName},
+        {"lName", teachr.lName},
+        {"uniID", teachr.uniID},
+        {"subjects", teachr.subjects},
+        {"password", teachr.password}};
 
-        newThematicBreak('*');
+    std::ofstream jsonOutFile(fileName);
+    jsonOutFile << data.dump(2, ' ');
+    jsonOutFile.close();
 
-        displayTeacherDshbrd(fullName, uniID);
-        return;
-    }
+    newThematicBreak('*');
+
+    displayTeacherDshbrd(fullName, uniID);
     return;
 }
 
@@ -255,14 +252,14 @@ void doLogin()
     using std::string;
     using json = nlohmann::ordered_json;
 
-    json data;
     string fileName;
     string occup, uniID, password;
     char choice;
     int arrIndx = 0;
 
-    getFileName(fileName);
+    json data;
 
+    getFileName(fileName);
     std::ifstream jsonInpFile(fileName);
     jsonInpFile >> data;
 
@@ -289,11 +286,8 @@ void doLogin()
                 displayStudentDshbrd(fullName, itemUniID);
                 return;
             }
-            else
-            {
-                displayTeacherDshbrd(fullName, itemUniID);
-                return;
-            }
+            displayTeacherDshbrd(fullName, itemUniID);
+            return;
         }
 
         arrIndx += 1;
@@ -493,7 +487,7 @@ void getOccupation(std::string &occup)
     return;
 }
 
-void getYearLevel(std::string &yrLvl, std::string &course)
+void getYearLevel(std::string &yearLevel, std::string &course)
 {
     using std::cin;
     using std::cout;
@@ -510,21 +504,21 @@ void getYearLevel(std::string &yrLvl, std::string &course)
     {
         cout << "\nWhat year level are you currently?";
         cout << "\n(specify Grade 6 if so): ";
-        std::getline(cin, yrLvl);
+        std::getline(cin, yearLevel);
         break;
     }
     case 'j':
     {
         cout << "\nWhat year level are you currently?";
         cout << "\n(specify Grade 7 if so): ";
-        std::getline(cin, yrLvl);
+        std::getline(cin, yearLevel);
         break;
     }
     case 's':
     {
         cout << "\nWhat year level are you currently?";
         cout << "\n(specify Grade 11 if so): ";
-        std::getline(cin, yrLvl);
+        std::getline(cin, yearLevel);
         getCourse(course);
         break;
     }
@@ -532,7 +526,7 @@ void getYearLevel(std::string &yrLvl, std::string &course)
     {
         cout << "\nWhat college level are you currently?";
         cout << "\n(specify Freshman if so): ";
-        std::getline(cin, yrLvl);
+        std::getline(cin, yearLevel);
         getCourse(course);
         break;
     }
@@ -579,8 +573,7 @@ void getSubjects(std::string subjects[])
         return;
     }
 
-    numOfSubj -= 1;
-    while (arrIndx <= numOfSubj)
+    while (arrIndx < numOfSubj)
     {
         cout << "\nType in the subject (add one at a time): ";
         cin >> subjects[arrIndx];
