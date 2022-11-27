@@ -55,7 +55,7 @@ namespace help
 {
     void getFileName(std::string &fileName)
     {
-        std::cout << "\nEnter your file name.";
+        std::cout << "\nEnter the file name to fetch data...";
         std::cout << "\n(must end with .json): ";
         std::cin >> fileName;
         std::cin.ignore(1000, '\n');
@@ -185,7 +185,7 @@ namespace help
 
     void getUniID(std::string &uniID)
     {
-        std::cout << "\nType in your university identification number: ";
+        std::cout << "\nType in your university identification code: ";
         std::cin >> uniID;
         std::cin.ignore(1000, '\n');
         return;
@@ -530,7 +530,8 @@ void displayWelcomeDshbrd()
     cout << dye::blue("\nWelcome to WVSU-SIS.");
     pressEnterToContinue();
 
-    cout << "\nWould you like to know the history of this program? (y/n): ";
+    cout << "\nWould you like to know the history of this program?";
+    cout << "\n(y/n): ";
     std::cin >> choice;
     std::cin.ignore(1000, '\n');
 
@@ -545,7 +546,7 @@ void displayWelcomeDshbrd()
         pressEnterToContinue();
         cout << "\n- Its purpose? An information system where students and teachers can look up their university profiles...";
         pressEnterToContinue();
-        cout << "\n- It uses json (Javascript Object Notation) to store that information...";
+        cout << "\n- It uses JSON (Javascript Object Notation) to store that information...";
         cout << "\n- Hence, this program requires a file of that type to write and store data...";
         cout << "\n- End of story, hope you liked it.";
         pressEnterToContinue();
@@ -636,6 +637,10 @@ void doSignup()
         SIS::stdntTemp stdnt = {fName, mName, lName, uniID, yearLevel, course, password};
 
         jsonManip::storeStdnt(stdnt, fileName);
+
+        cout << dye::green("\nSuccessfully signed up!");
+        cout << dye::green("\nYou will now be routed to your dashboard...");
+        feat::pressEnterToContinue();
 
         newThematicBreak('*');
         displayStudentDshbrd(fullName, uniID);
