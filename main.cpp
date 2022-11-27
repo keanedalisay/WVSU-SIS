@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include "json.hpp"
+#include "color.hpp"
 
 void displayWelcomeDshbrd();
 void loginOrSignup();
@@ -28,7 +29,7 @@ namespace feat
     void pressEnterToContinue()
     {
         std::cin.clear();
-        std::cout << "\n\nPress enter to continue... ";
+        std::cout << dye::light_yellow("\n\nPress enter to continue... ");
         std::cin.ignore(1000, '\n');
         return;
     }
@@ -37,7 +38,8 @@ namespace feat
     {
         using std::cout;
         cout << "\n";
-        char dash = symbol;
+        auto dash = dye::blue(symbol);
+
         int dashCount = 0;
         while (dashCount <= 50)
         {
@@ -106,8 +108,8 @@ namespace help
 
         if (numOfSubj > 5)
         {
-            cout << "\nYou entered more than 5 subjects!";
-            cout << "\nRe-routing you to re-enter your subjects...";
+            cout << dye::red("\nYou entered more than 5 subjects!");
+            cout << dye::red("\nRe-routing you to re-enter your subjects...");
             feat::pressEnterToContinue();
 
             getSubjects(subjects);
@@ -115,8 +117,8 @@ namespace help
         }
         else if (numOfSubj <= 0)
         {
-            cout << "\nYou entered a number below or equal to 0!";
-            cout << "\nRe-routing you to re-enter your subjects...";
+            cout << dye::red("\nYou entered a number below or equal to 0!");
+            cout << dye::red("\nRe-routing you to re-enter your subjects...");
             feat::pressEnterToContinue();
 
             getSubjects(subjects);
@@ -207,14 +209,14 @@ namespace help
 
             if (finalPassword == itemPassword)
             {
-                cout << "\nLogged in successfully...";
+                cout << dye::light_green("\nLogged in successfully...");
                 feat::pressEnterToContinue();
 
                 feat::newThematicBreak('*');
                 return;
             }
-            cout << "\nPassword entered does not match!";
-            cout << "\nRe-routing you to re-enter password...";
+            cout << dye::red("\nPassword entered does not match!");
+            cout << dye::red("\nRe-routing you to re-enter password...");
             feat::pressEnterToContinue();
 
             getPassword(itemPassword, true);
@@ -232,13 +234,13 @@ namespace help
         if (firstPassword == finalPassword)
         {
             password = finalPassword;
-            cout << "\nPassword entered matches...";
+            cout << dye::light_green("\nPassword entered matches...");
             feat::pressEnterToContinue();
         }
         else
         {
-            cout << "\nPassword entered does not match!\n";
-            cout << "\nRe-routing you to re-enter password...";
+            cout << dye::red("\nPassword entered does not match!\n");
+            cout << dye::red("\nRe-routing you to re-enter password...");
             feat::pressEnterToContinue();
             getPassword(password, false);
         }
@@ -525,7 +527,7 @@ void displayWelcomeDshbrd()
 
     feat::newThematicBreak('-');
 
-    cout << "\nWelcome to WVSU-SIS.";
+    cout << dye::blue("\nWelcome to WVSU-SIS.");
     pressEnterToContinue();
 
     cout << "\nWould you like to know the history of this program? (y/n): ";
@@ -686,8 +688,8 @@ void doLogin()
         return;
     }
 
-    cout << "\nThe university identification number you entered...";
-    cout << "\nDoes not match any of our pre-existing users...";
+    cout << dye::red("\nThe university identification number you entered...");
+    cout << dye::red("\nDoes not match any of our pre-existing users...");
     feat::pressEnterToContinue();
 
     cout << "\nWould you like to try and log-in again?";
@@ -707,6 +709,7 @@ void doLogin()
 
 void displayStudentDshbrd(std::string fullName, std::string uniID)
 {
+    using dye::green;
     using feat::pressEnterToContinue;
     using std::cin;
     using std::cout;
@@ -716,7 +719,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     string studentUniID = uniID;
     int choice;
 
-    cout << "\n----- Welcome " << fullName << " -----";
+    cout << green("\n----- Welcome ") << green(fullName) << green(" -----");
     pressEnterToContinue();
 
     cout << "\nPlease choose an option you would like to do below...";
@@ -759,6 +762,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
 
 void displayTeacherDshbrd(std::string fullName, std::string uniID)
 {
+    using dye::green;
     using feat::pressEnterToContinue;
     using std::cin;
     using std::cout;
@@ -768,7 +772,7 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
     string teacherUniID = uniID;
     int choice;
 
-    cout << "\n----- Welcome " << fullName << " -----";
+    cout << green("\n----- Welcome ") << green(fullName) << green(" -----");
     pressEnterToContinue();
 
     cout << "\nPlease choose an option you would like to do below...";
@@ -811,6 +815,7 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
 
 void printStudentInfo(std::string uniID)
 {
+    using dye::green;
     using feat::newThematicBreak;
     using feat::pressEnterToContinue;
     using std::cout;
@@ -822,7 +827,7 @@ void printStudentInfo(std::string uniID)
     help::getFileName(fileName);
     SIS::stdntTemp stdnt = jsonManip::getStdntInfo(uniID, fileName);
 
-    cout << "\n----- Printing student data -----";
+    cout << green("\n----- Printing student data -----");
 
     if (stdnt.mName == "N/A")
         cout << "\n\nFullname: " + stdnt.fName + " " + stdnt.lName;
@@ -833,7 +838,7 @@ void printStudentInfo(std::string uniID)
     cout << "\nYear Level: " + stdnt.yearLevel;
     cout << "\nCourse: " + stdnt.course;
 
-    cout << "\n\n-----      End of file      -----";
+    cout << green("\n\n-----      End of file      -----");
 
     pressEnterToContinue();
 
@@ -844,6 +849,7 @@ void printStudentInfo(std::string uniID)
 
 void printTeacherInfo(std::string uniID)
 {
+    using dye::green;
     using feat::newThematicBreak;
     using feat::pressEnterToContinue;
     using std::cout;
@@ -855,7 +861,7 @@ void printTeacherInfo(std::string uniID)
     help::getFileName(fileName);
     SIS::teachrTemp teachr = jsonManip::getTeachrInfo(uniID, fileName);
 
-    cout << "\n----- Printing teacher data -----";
+    cout << green("\n----- Printing teacher data -----");
 
     if (teachr.mName == "N/A")
         cout << "\n\nFullname: " + teachr.fName + " " + teachr.lName;
@@ -871,7 +877,7 @@ void printTeacherInfo(std::string uniID)
     cout << "\n\t- " + teachr.subjects[3];
     cout << "\n\t- " + teachr.subjects[4];
 
-    cout << "\n\n-----      End of file      -----";
+    cout << green("\n\n-----      End of file      -----");
 
     pressEnterToContinue();
 
@@ -882,6 +888,7 @@ void printTeacherInfo(std::string uniID)
 
 void doLogout(std::string fullName, std::string uniID, char occup)
 {
+    using dye::green;
     using feat::pressEnterToContinue;
     using std::cin;
     using std::cout;
@@ -897,7 +904,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
         cout << "\nRe-routing you to welcome dashboard...";
         pressEnterToContinue();
 
-        cout << "\n----- Logging out as " + fullName + " -----";
+        cout << green("\n----- Logging out as ") + green(fullName) + green(" -----");
         pressEnterToContinue();
 
         loginOrSignup();
