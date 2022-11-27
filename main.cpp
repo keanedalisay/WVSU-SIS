@@ -18,6 +18,8 @@ void doLogout(std::string fullname, std::string uniID, char occup);
 void displayStudentDshbrd(std::string fullName, std::string uniID);
 void displayTeacherDshbrd(std::string fullName, std::string uniID);
 
+void printStudentInfo(std::string uniID);
+
 void exitProgram();
 
 namespace feat
@@ -393,6 +395,48 @@ namespace jsonManip
         return false;
     }
 
+    SIS::stdntTemp getStdntInfo(string uniID, string fileName)
+    {
+        using std::string;
+        json data;
+
+        string itemFstName, itemMidName, itemLstName;
+        string itemUniID, itemYearLevel, itemCourse;
+
+        getData(data, fileName);
+
+        int arrIndx = 0;
+        for (auto &item : data["students"].items())
+        {
+            itemUniID = data["students"][arrIndx]["uniID"];
+
+            if (itemUniID == uniID)
+            {
+                itemFstName = data["students"][arrIndx]["fName"];
+                itemMidName = data["students"][arrIndx]["mName"];
+                itemLstName = data["students"][arrIndx]["lName"];
+
+                itemYearLevel = data["students"][arrIndx]["yrLvl"];
+                itemCourse = data["students"][arrIndx]["course"];
+
+                break;
+            }
+
+            arrIndx += 1;
+            continue;
+        }
+
+        SIS::stdntTemp stdnt = {itemFstName,
+                                itemMidName,
+                                itemLstName,
+                                itemUniID,
+                                itemYearLevel,
+                                itemCourse,
+                                " "};
+
+        return stdnt;
+    }
+
     string getUserFullName(string occup, string uniID, string fileName)
     {
         using std::string;
@@ -643,11 +687,14 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     switch (choice)
     {
     case 1:
+        printStudentInfo(uniID);
+        displayStudentDshbrd(teacherFullName, teacherUniID);
+        break;
     case 2:
         cout << "\n- Sorry, this feature was intentionally not implemented...";
         pressEnterToContinue();
         cout << "\n- I (Keane) would have liked to...";
-        cout << "\n- But C++ development is not my focus as of writing (11/26/2022)...";
+        cout << "\n- But C++ development is not my intended career focus...";
         pressEnterToContinue();
         cout << "\n- Hope you understand... re-routing you to student dashboard...";
         pressEnterToContinue();
@@ -710,6 +757,35 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
         doLogout(teacherFullName, teacherUniID, 't');
         break;
     }
+
+    return;
+}
+
+void printStudentInfo(std::string uniID)
+{
+    using feat::newThematicBreak;
+    using feat::pressEnterToContinue;
+    using std::cout;
+    using std::string;
+
+    newThematicBreak('*');
+
+    string fileName;
+    help::getFileName(fileName);
+    SIS::stdntTemp stdnt = jsonManip::getStdntInfo(uniID, fileName);
+
+    cout << "\n----- Printing student data -----";
+
+    cout << "\n\nFullname: " + stdnt.fName + " " + stdnt.mName + " " + stdnt.lName;
+    cout << "\nWVSU ID Code: " + stdnt.uniID;
+    cout << "\nYear Level: " + stdnt.yearLevel;
+    cout << "\nCourse: " + stdnt.course;
+
+    cout << "\n\n-----      End of file      -----";
+
+    pressEnterToContinue();
+
+    newThematicBreak('*');
 
     return;
 }
