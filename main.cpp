@@ -1,8 +1,14 @@
 // Program Title: West Visayas State University Student Information System
-// Submitted by: Keane Dalisay
+// Submitted by: Keane Dalisay and Nel Alanan
 
 // Program Description: WVSU-SIS is a C++ based program designed
 // to store, retrieve, and print student as well as teacher info.
+
+// Libraries Used:
+// - nlohmann/json, for JSON data manipulation
+// - aaufulei/color-console, to give color to strings on output
+
+// Github Repo: https://github.com/keanedalisay/WVSU-SIS
 
 #include <iostream>
 #include <fstream>
