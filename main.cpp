@@ -16,6 +16,7 @@ void doLogin();
 void doLogout(std::string fullname, std::string uniID, char occup);
 
 void displayStudentDshbrd(std::string fullName, std::string uniID);
+void displayTeacherDshbrd(std::string fullName, std::string uniID);
 
 void exitProgram();
 
@@ -211,7 +212,8 @@ void doSignup()
 
         newThematicBreak('*');
 
-        displayStudentDshbrd(fullName, stdnt.uniID);
+        displayStudentDshbrd(fullName, uniID);
+        return;
     }
     else if (occup == "teachers")
     {
@@ -231,6 +233,15 @@ void doSignup()
             {"uniID", teachr.uniID},
             {"subjects", teachr.subjects},
             {"password", teachr.password}};
+
+        std::ofstream jsonOutFile(fileName);
+        jsonOutFile << data.dump(2, ' ');
+        jsonOutFile.close();
+
+        newThematicBreak('*');
+
+        displayTeacherDshbrd(fullName, uniID);
+        return;
     }
     return;
 }
@@ -280,6 +291,7 @@ void doLogin()
             }
             else
             {
+                displayTeacherDshbrd(fullName, itemUniID);
                 return;
             }
         }
@@ -313,8 +325,8 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     using std::cout;
     using std::string;
 
-    string studentUniID = uniID;
-    string studentFullName = fullName;
+    string teacherUniID = uniID;
+    string teacherFullName = fullName;
     int choice;
 
     cout << "\n----- Welcome " << fullName << " -----";
@@ -342,13 +354,61 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
         cout << "\n- Hope you understand... re-routing you to student dashboard...";
         pressEnterToContinue();
 
-        displayStudentDshbrd(studentFullName, studentUniID);
+        displayStudentDshbrd(teacherFullName, teacherUniID);
         break;
     case 3:
         cout << "\n Temp";
         break;
     case 4:
-        doLogout(studentFullName, studentUniID, 's');
+        doLogout(teacherFullName, teacherUniID, 's');
+        break;
+    }
+
+    return;
+}
+
+void displayTeacherDshbrd(std::string fullName, std::string uniID)
+{
+    using std::cin;
+    using std::cout;
+    using std::string;
+
+    string teacherUniID = uniID;
+    string teacherFullName = fullName;
+    int choice;
+
+    cout << "\n----- Welcome " << fullName << " -----";
+    pressEnterToContinue();
+
+    cout << "\nPlease choose an option you would like to do below...";
+    cout << "\n\n> Print your info (1)";
+    cout << "\n> Assign student grades (2)";
+    cout << "\n> Drink coffee (3)";
+    cout << "\n> Log Out (4)";
+
+    cout << "\n\n: ";
+    cin >> choice;
+    cin.ignore(1000, '\n');
+
+    switch (choice)
+    {
+    case 1:
+    case 2:
+        cout << "\n- Sorry, this feature was intentionally not implemented...";
+        pressEnterToContinue();
+        cout << "\n- I (Keane) would have liked to...";
+        cout << "\n- But C++ development is not my focus as of writing (11/26/2022)...";
+        pressEnterToContinue();
+        cout << "\n- Hope you understand... re-routing you to teacher dashboard...";
+        pressEnterToContinue();
+
+        displayTeacherDshbrd(teacherFullName, teacherUniID);
+        break;
+    case 3:
+        cout << "\n Temp";
+        break;
+    case 4:
+        doLogout(teacherFullName, teacherUniID, 't');
         break;
     }
 
