@@ -659,7 +659,7 @@ void doLogin()
         return;
     }
 
-    exitProgram();
+    loginOrSignup();
     return;
 }
 
@@ -817,7 +817,7 @@ void doLogout(std::string fullName, std::string uniID, char occup)
         cout << "\n----- Logging out as " + fullName + " -----";
         pressEnterToContinue();
 
-        displayWelcomeDshbrd();
+        loginOrSignup();
         return;
     }
 
