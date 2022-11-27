@@ -19,6 +19,7 @@ void displayStudentDshbrd(std::string fullName, std::string uniID);
 void displayTeacherDshbrd(std::string fullName, std::string uniID);
 
 void printStudentInfo(std::string uniID);
+void printTeacherInfo(std::string uniID);
 
 void exitProgram();
 
@@ -125,8 +126,7 @@ namespace help
         while (arrIndx < numOfSubj)
         {
             cout << "\nType in the subject (add one at a time): ";
-            cin >> subjects[arrIndx];
-            cin.ignore(1000, '\n');
+            std::getline(cin, subjects[arrIndx]);
             arrIndx += 1;
         }
 
@@ -433,6 +433,48 @@ namespace jsonManip
         return stdnt;
     }
 
+    SIS::teachrTemp getTeachrInfo(string uniID, string fileName)
+    {
+        using std::string;
+        json data;
+        string itemFstName, itemMidName, itemLstName;
+        string itemUniID;
+        string itemSubjects[5];
+
+        getData(data, fileName);
+        int arrIndx = 0;
+        for (auto &item : data["teachers"].items())
+        {
+            itemUniID = data["teachers"][arrIndx]["uniID"];
+
+            if (itemUniID == uniID)
+            {
+                itemFstName = data["teachers"][arrIndx]["fName"];
+                itemMidName = data["teachers"][arrIndx]["mName"];
+                itemLstName = data["teachers"][arrIndx]["lName"];
+
+                itemSubjects[0] = data["teachers"][arrIndx]["subjects"][0];
+                itemSubjects[1] = data["teachers"][arrIndx]["subjects"][1];
+                itemSubjects[2] = data["teachers"][arrIndx]["subjects"][2];
+                itemSubjects[3] = data["teachers"][arrIndx]["subjects"][3];
+                itemSubjects[4] = data["teachers"][arrIndx]["subjects"][4];
+                break;
+            }
+
+            arrIndx += 1;
+            continue;
+        }
+
+        SIS::teachrTemp teachr = {itemFstName,
+                                  itemMidName,
+                                  itemLstName,
+                                  itemUniID,
+                                  {itemSubjects[0], itemSubjects[1], itemSubjects[2], itemSubjects[3], itemSubjects[4]},
+                                  " "};
+
+        return teachr;
+    }
+
     string getUserFullName(string occup, string uniID, string fileName)
     {
         using std::string;
@@ -670,8 +712,8 @@ void displayStudentDshbrd(std::string fullName, std::string uniID)
     using std::cout;
     using std::string;
 
-    string studentUniID = uniID;
     string studentFullName = fullName;
+    string studentUniID = uniID;
     int choice;
 
     cout << "\n----- Welcome " << fullName << " -----";
@@ -722,8 +764,8 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
     using std::cout;
     using std::string;
 
-    string teacherUniID = uniID;
     string teacherFullName = fullName;
+    string teacherUniID = uniID;
     int choice;
 
     cout << "\n----- Welcome " << fullName << " -----";
@@ -742,6 +784,9 @@ void displayTeacherDshbrd(std::string fullName, std::string uniID)
     switch (choice)
     {
     case 1:
+        printTeacherInfo(uniID);
+        displayStudentDshbrd(teacherFullName, teacherUniID);
+        break;
     case 2:
         cout << "\n- Sorry, this feature was intentionally not implemented...";
         pressEnterToContinue();
@@ -787,6 +832,44 @@ void printStudentInfo(std::string uniID)
     cout << "\nWVSU ID Code: " + stdnt.uniID;
     cout << "\nYear Level: " + stdnt.yearLevel;
     cout << "\nCourse: " + stdnt.course;
+
+    cout << "\n\n-----      End of file      -----";
+
+    pressEnterToContinue();
+
+    newThematicBreak('*');
+
+    return;
+}
+
+void printTeacherInfo(std::string uniID)
+{
+    using feat::newThematicBreak;
+    using feat::pressEnterToContinue;
+    using std::cout;
+    using std::string;
+
+    newThematicBreak('*');
+
+    string fileName;
+    help::getFileName(fileName);
+    SIS::teachrTemp teachr = jsonManip::getTeachrInfo(uniID, fileName);
+
+    cout << "\n----- Printing teacher data -----";
+
+    if (teachr.mName == "N/A")
+        cout << "\n\nFullname: " + teachr.fName + " " + teachr.lName;
+    else
+        cout << "\n\nFullname: " + teachr.fName + " " + teachr.mName + " " + teachr.lName;
+
+    cout << "\nWVSU ID Code: " + teachr.uniID;
+
+    cout << "\nSubjects taken: ";
+    cout << "\n\t- " + teachr.subjects[0];
+    cout << "\n\t- " + teachr.subjects[1];
+    cout << "\n\t- " + teachr.subjects[2];
+    cout << "\n\t- " + teachr.subjects[3];
+    cout << "\n\t- " + teachr.subjects[4];
 
     cout << "\n\n-----      End of file      -----";
 
