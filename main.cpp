@@ -82,54 +82,6 @@ namespace help
         return;
     }
 
-    void getYearLevel(std::string &yearLevel, std::string &course)
-    {
-        using std::cin;
-        using std::cout;
-        char crntEdu;
-
-        cout << "\nAre you an elementary, junior high, senior high, or college student?";
-        cout << "\n(e/j/s/c): ";
-        cin >> crntEdu;
-        cin.ignore(1000, '\n');
-
-        switch (tolower(crntEdu))
-        {
-        case 'e':
-        {
-            cout << "\nWhat year level are you currently?";
-            cout << "\n(specify Grade 6 if so): ";
-            std::getline(cin, yearLevel);
-            break;
-        }
-        case 'j':
-        {
-            cout << "\nWhat year level are you currently?";
-            cout << "\n(specify Grade 7 if so): ";
-            std::getline(cin, yearLevel);
-            break;
-        }
-        case 's':
-        {
-            cout << "\nWhat year level are you currently?";
-            cout << "\n(specify Grade 11 if so): ";
-            std::getline(cin, yearLevel);
-            help::getCourse(course);
-            break;
-        }
-        case 'c':
-        {
-            cout << "\nWhat college level are you currently?";
-            cout << "\n(specify Freshman if so): ";
-            std::getline(cin, yearLevel);
-            help::getCourse(course);
-            break;
-        }
-        }
-
-        return;
-    }
-
     void getCourse(std::string &course)
     {
         std::cout << "\nWhat senior high or college course are you currently taking?";
@@ -174,6 +126,54 @@ namespace help
             cin >> subjects[arrIndx];
             cin.ignore(1000, '\n');
             arrIndx += 1;
+        }
+
+        return;
+    }
+
+    void getYearLevel(std::string &yearLevel, std::string &course)
+    {
+        using std::cin;
+        using std::cout;
+        char crntEdu;
+
+        cout << "\nAre you an elementary, junior high, senior high, or college student?";
+        cout << "\n(e/j/s/c): ";
+        cin >> crntEdu;
+        cin.ignore(1000, '\n');
+
+        switch (tolower(crntEdu))
+        {
+        case 'e':
+        {
+            cout << "\nWhat year level are you currently?";
+            cout << "\n(specify Grade 6 if so): ";
+            std::getline(cin, yearLevel);
+            break;
+        }
+        case 'j':
+        {
+            cout << "\nWhat year level are you currently?";
+            cout << "\n(specify Grade 7 if so): ";
+            std::getline(cin, yearLevel);
+            break;
+        }
+        case 's':
+        {
+            cout << "\nWhat year level are you currently?";
+            cout << "\n(specify Grade 11 if so): ";
+            std::getline(cin, yearLevel);
+            getCourse(course);
+            break;
+        }
+        case 'c':
+        {
+            cout << "\nWhat college level are you currently?";
+            cout << "\n(specify Freshman if so): ";
+            std::getline(cin, yearLevel);
+            getCourse(course);
+            break;
+        }
         }
 
         return;
@@ -286,6 +286,144 @@ namespace SIS
     };
 }
 
+namespace jsonManip
+{
+    using json = nlohmann::ordered_json;
+
+    void getData(json &data, std::string fileName)
+    {
+        std::ifstream jsonInpFile(fileName);
+
+        if (help::isNotEmptyFile(jsonInpFile))
+        {
+            jsonInpFile >> data;
+        }
+
+        jsonInpFile.close();
+        return;
+    }
+
+    void dumpData(json &data, std::string fileName)
+    {
+        std::ofstream jsonOutFile(fileName);
+        jsonOutFile << data.dump(2, ' ');
+
+        jsonOutFile.close();
+        return;
+    }
+
+    int getNxtArrIndx(std::string occup, std::string fileName)
+    {
+        json data;
+
+        getData(data, fileName);
+
+        int arrIndx = 0;
+        for (auto &item : data[occup].items())
+        {
+            arrIndx++;
+        }
+
+        return arrIndx;
+    }
+
+    void storeStdnt(SIS::stdntTemp stdnt, std::string fileName)
+    {
+        json data;
+
+        getData(data, fileName);
+
+        data["students"][getNxtArrIndx("students", fileName)] = {
+            {"fName", stdnt.fName},
+            {"mName", stdnt.mName},
+            {"lName", stdnt.lName},
+            {"uniID", stdnt.uniID},
+            {"yearLevel", stdnt.yearLevel},
+            {"course", stdnt.course},
+            {"password", stdnt.password}};
+
+        dumpData(data, fileName);
+
+        return;
+    }
+
+    void storeTeachr(SIS::teachrTemp teachr, std::string fileName)
+    {
+        json data;
+
+        getData(data, fileName);
+
+        data["teachers"][getNxtArrIndx("teachers", fileName)] = {
+            {"fName", teachr.fName},
+            {"mName", teachr.mName},
+            {"lName", teachr.lName},
+            {"uniID", teachr.uniID},
+            {"subjects", teachr.subjects},
+            {"password", teachr.password}};
+
+        dumpData(data, fileName);
+
+        return;
+    }
+
+    bool confirmLogIn(std::string occup, std::string uniID, std::string fileName)
+    {
+        using std::string;
+        json data;
+
+        getData(data, fileName);
+
+        int arrIndx = 0;
+        for (auto &item : data[occup].items())
+        {
+            string itemUniID = data[occup][arrIndx]["uniID"];
+            string itemPassword = data[occup][arrIndx]["password"];
+
+            if (itemUniID == uniID)
+            {
+                help::getPassword(itemPassword, true);
+                return true;
+            }
+
+            arrIndx += 1;
+            continue;
+        }
+
+        return false;
+    }
+
+    std::string getUserFullName(std::string occup, std::string uniID, std::string fileName)
+    {
+        using std::string;
+        string fullName = " ";
+
+        json data;
+
+        getData(data, fileName);
+
+        int arrIndx = 0;
+        for (auto &item : data[occup].items())
+        {
+            string itemUniID = data[occup][arrIndx]["uniID"];
+
+            if (itemUniID == uniID)
+            {
+                string fName = data[occup][arrIndx]["fName"];
+                string mName = data[occup][arrIndx]["mName"];
+                string lName = data[occup][arrIndx]["lName"];
+
+                fullName = fName + " " + mName + " " + lName;
+                break;
+            }
+
+            arrIndx += 1;
+            continue;
+        }
+
+        return fullName;
+    }
+}
+
 int main()
 {
     displayWelcomeDshbrd();
@@ -369,7 +507,6 @@ void doSignup()
     using std::cin;
     using std::cout;
     using std::string;
-    using json = nlohmann::ordered_json;
 
     feat::newThematicBreak('*');
 
@@ -379,16 +516,7 @@ void doSignup()
     string subjects[5];
     char choice;
 
-    json data;
-
     help::getFileName(fileName);
-    std::ifstream jsonInpFile(fileName);
-
-    if (help::isNotEmptyFile(jsonInpFile))
-    {
-        jsonInpFile >> data;
-    }
-    jsonInpFile.close();
 
     getWhatName("first", fName);
 
@@ -410,32 +538,14 @@ void doSignup()
     help::getPassword(password, false);
     help::getOccupation(occup);
 
-    int arrIndx = 0;
-    for (auto &item : data[occup].items())
-    {
-        arrIndx++;
-    }
-
     if (occup == "students")
     {
         help::getYearLevel(yearLevel, course);
         SIS::stdntTemp stdnt = {fName, mName, lName, uniID, yearLevel, course, password};
 
-        data[occup][arrIndx] = {
-            {"fName", stdnt.fName},
-            {"mName", stdnt.mName},
-            {"lName", stdnt.lName},
-            {"uniID", stdnt.uniID},
-            {"yearLevel", stdnt.yearLevel},
-            {"course", stdnt.course},
-            {"password", stdnt.password}};
-
-        std::ofstream jsonOutFile(fileName);
-        jsonOutFile << data.dump(2, ' ');
-        jsonOutFile.close();
+        jsonManip::storeStdnt(stdnt, fileName);
 
         feat::newThematicBreak('*');
-
         displayStudentDshbrd(fullName, uniID);
         return;
     }
@@ -449,30 +559,19 @@ void doSignup()
         {subjects[0], subjects[1], subjects[2], subjects[3], subjects[4]},
         password};
 
-    data[occup][arrIndx] = {
-        {"fName", teachr.fName},
-        {"mName", teachr.mName},
-        {"lName", teachr.lName},
-        {"uniID", teachr.uniID},
-        {"subjects", teachr.subjects},
-        {"password", teachr.password}};
-
-    std::ofstream jsonOutFile(fileName);
-    jsonOutFile << data.dump(2, ' ');
-    jsonOutFile.close();
+    jsonManip::storeTeachr(teachr, fileName);
 
     feat::newThematicBreak('*');
-
     displayTeacherDshbrd(fullName, uniID);
     return;
 }
 
 void doLogin()
 {
+    using jsonManip::confirmLogIn;
     using std::cin;
     using std::cout;
     using std::string;
-    using json = nlohmann::ordered_json;
 
     feat::newThematicBreak('*');
 
@@ -481,41 +580,20 @@ void doLogin()
     char choice;
     int arrIndx = 0;
 
-    json data;
-
     help::getFileName(fileName);
-    std::ifstream jsonInpFile(fileName);
-    jsonInpFile >> data;
-
     help::getUniID(uniID);
     help::getOccupation(occup);
 
-    for (auto &item : data[occup].items())
+    if (confirmLogIn(occup, uniID, fileName))
     {
-        string itemUniID = data[occup][arrIndx]["uniID"];
-        string itemPassword = data[occup][arrIndx]["password"];
+        string fullName = jsonManip::getUserFullName(occup, uniID, fileName);
 
-        if (itemUniID == uniID)
-        {
-            help::getPassword(itemPassword, true);
+        if (occup == "students")
+            displayStudentDshbrd(fullName, uniID);
+        else
+            displayTeacherDshbrd(fullName, uniID);
 
-            string itemFirstName = data[occup][arrIndx]["fName"];
-            string itemMiddleName = data[occup][arrIndx]["mName"];
-            string itemLastName = data[occup][arrIndx]["lName"];
-
-            string fullName = itemFirstName + " " + itemMiddleName + " " + itemLastName;
-
-            if (occup == "students")
-            {
-                displayStudentDshbrd(fullName, itemUniID);
-                return;
-            }
-            displayTeacherDshbrd(fullName, itemUniID);
-            return;
-        }
-
-        arrIndx += 1;
-        continue;
+        return;
     }
 
     cout << "\nThe university identification number you entered...";
