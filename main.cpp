@@ -289,8 +289,9 @@ namespace SIS
 namespace jsonManip
 {
     using json = nlohmann::ordered_json;
+    using std::string;
 
-    void getData(json &data, std::string fileName)
+    void getData(json &data, string fileName)
     {
         std::ifstream jsonInpFile(fileName);
 
@@ -303,7 +304,7 @@ namespace jsonManip
         return;
     }
 
-    void dumpData(json &data, std::string fileName)
+    void dumpData(json &data, string fileName)
     {
         std::ofstream jsonOutFile(fileName);
         jsonOutFile << data.dump(2, ' ');
@@ -312,7 +313,7 @@ namespace jsonManip
         return;
     }
 
-    int getNxtArrIndx(std::string occup, std::string fileName)
+    int getNxtArrIndx(std::string occup, string fileName)
     {
         json data;
 
@@ -327,7 +328,7 @@ namespace jsonManip
         return arrIndx;
     }
 
-    void storeStdnt(SIS::stdntTemp stdnt, std::string fileName)
+    void storeStdnt(SIS::stdntTemp stdnt, string fileName)
     {
         json data;
 
@@ -347,7 +348,7 @@ namespace jsonManip
         return;
     }
 
-    void storeTeachr(SIS::teachrTemp teachr, std::string fileName)
+    void storeTeachr(SIS::teachrTemp teachr, string fileName)
     {
         json data;
 
@@ -366,7 +367,7 @@ namespace jsonManip
         return;
     }
 
-    bool confirmLogIn(std::string occup, std::string uniID, std::string fileName)
+    bool confirmLogIn(string occup, string uniID, string fileName)
     {
         using std::string;
         json data;
@@ -392,7 +393,7 @@ namespace jsonManip
         return false;
     }
 
-    std::string getUserFullName(std::string occup, std::string uniID, std::string fileName)
+    string getUserFullName(string occup, string uniID, string fileName)
     {
         using std::string;
         string fullName = " ";
