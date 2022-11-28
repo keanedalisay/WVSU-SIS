@@ -20,13 +20,19 @@ If you want to run it through **Command Prompt** or **PowerShell**, follow the g
 
 2. Type `cd` in command line, add space, paste path and press `Enter`.
 
+<img src="imgs/navigate-to-folder-path.jpg" width=400>
+
 3. Type `g++`, space, the file name `main.cpp`, space, `-o`, space, and the name of the executable `WVSU-SIS.exe`. You can name the executable anything you want. Note you must have **g++ compiler** installed for this to work.
+
+<img src="imgs/compile-and-create-exe.jpg" width=400>
 
 4. Run the executable file by typing its name, like `WVSU-SIS`. Note your executable may have a different name so check it in the folder it is in.
 
-5. That's it, WVSU-SIS now runs on your computer! Feel free to watch the demonstration video below.
+<img src="imgs/run-executable.jpg" width=400>
 
-> If it asks you for a `.json` file, type in `data.json`. You can modify the file name on the folder you extracted WVSU-SIS.
+That's it, WVSU-SIS now runs on your terminal!
+
+If it asks you for a `.json` file, type in `data.json`. You can modify the file name on the folder you extracted WVSU-SIS.
 
 ---
 
