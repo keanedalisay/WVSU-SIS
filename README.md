@@ -4,6 +4,32 @@ The West Visayas State University Student Information System (WVSU-SIS) is a C++
 
 This program was made as a final project for our subject CC 202 (Computer Programming 1).
 
+## Installation
+
+<img src="imgs/download-zip.jpg" width=400>
+<img src="imgs/extract-zip-file.jpg" width=400>
+<img src="imgs/main-cpp.jpg" width=400>
+
+Then open the `main.cpp` file, compile, and run it through your designated IDE or code editor like **Dev C++**, **Code::Blocks**, **Visual Studio** or **Visual Studio Code**.
+
+If you want to run it through **Command Prompt** or **PowerShell**, follow the guide below:
+
+1. Copy folder path to `main.cpp`.
+
+<img src="imgs/copy-wvsu-sis-folder-path.jpg" width=400>
+
+2. Type `cd` in command line, add space, paste path and press `Enter`.
+
+3. Type `g++`, space, the file name `main.cpp`, space, `-o`, space, and the name of the executable `WVSU-SIS.exe`. You can name the executable anything you want. Note you must have **g++ compiler** installed for this to work.
+
+4. Run the executable file by typing its name, like `WVSU-SIS`. Note your executable may have a different name so check it in the folder it is in.
+
+5. That's it, WVSU-SIS now runs on your computer! Feel free to watch the demonstration video below.
+
+> If it asks you for a `.json` file, type in `data.json`. You can modify the file name on the folder you extracted WVSU-SIS.
+
+---
+
 ## Contributors
 
 <a href="https://github.com/ObnoxiousCoder"><img src=imgs/nel-alanan.png title="Nel Alanan" width=50 height=50></a>
