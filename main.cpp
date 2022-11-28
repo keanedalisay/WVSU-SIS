@@ -77,18 +77,33 @@ namespace help
 
     void getOccupation(std::string &occup)
     {
+        using std::cout;
+
         char occupChoice;
-        std::cout << "\nAre you a student or teacher?";
-        std::cout << "\n(s/t): ";
+        cout << "\nAre you a student or teacher?";
+        cout << "\n(s/t): ";
         std::cin >> occupChoice;
         std::cin.ignore(1000, '\n');
 
         if (tolower(occupChoice) == 's')
+        {
             occup = "students";
+            return;
+        }
         else if (tolower(occupChoice) == 't')
+        {
             occup = "teachers";
-        else
-            exitProgram();
+            return;
+        }
+
+        cout << dye::red("\nYou entered an occupation that is...");
+        cout << dye::red("\nNot allowed in this system...");
+        feat::pressEnterToContinue();
+
+        cout << "\nRe-routing you back to the welcome dashboard...";
+        feat::pressEnterToContinue();
+
+        loginOrSignup();
 
         return;
     }
@@ -652,20 +667,22 @@ void doSignup()
         displayStudentDshbrd(fullName, uniID);
         return;
     }
+    else if (occup == "teachers")
+    {
+        help::getSubjects(subjects);
+        SIS::teachrTemp teachr = {
+            fName,
+            mName,
+            lName,
+            uniID,
+            {subjects[0], subjects[1], subjects[2], subjects[3], subjects[4]},
+            password};
 
-    help::getSubjects(subjects);
-    SIS::teachrTemp teachr = {
-        fName,
-        mName,
-        lName,
-        uniID,
-        {subjects[0], subjects[1], subjects[2], subjects[3], subjects[4]},
-        password};
+        jsonManip::storeTeachr(teachr, fileName);
 
-    jsonManip::storeTeachr(teachr, fileName);
-
-    newThematicBreak('*');
-    displayTeacherDshbrd(fullName, uniID);
+        newThematicBreak('*');
+        displayTeacherDshbrd(fullName, uniID);
+    }
     return;
 }
 
